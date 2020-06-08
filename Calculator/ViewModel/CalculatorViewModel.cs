@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 
@@ -9,40 +10,14 @@ namespace Calculator.ViewModel
         private bool _isNum1 = true;
 
         private string _number1 = "0";
-        public string Number1
-        {
-            get { return _number1; }
-        }
-
         private string _number2 = "0";
-        public string Number2
-        {
-            get { return _number2; }
-        }
-
         private Operators? _operator;
-        public Operators? Operator
-        {
-            get { return _operator; }
-        }
 
+        private string _display = "0";
         public string Display
         {
-            get { return _isNum1 ? Number1 : Number2; }
-            private set
-            {
-                if (_isNum1)
-                {
-                    _number1 = value;
-                    RaisePropertyChanged(() => Number1);
-                }
-                else
-                {
-                    _number2 = value;
-                    RaisePropertyChanged(() => Number2);
-                }
-                RaisePropertyChanged(() => Display);
-            }
+            get { return _display; }
+            private set { Set(() => Display, ref _display, value); }
         }
 
         private RelayCommand<string> _inputNumberCommand;
@@ -83,51 +58,91 @@ namespace Calculator.ViewModel
 
         public void InputNumber(string input)
         {
-            if (Operator != null)
+            if (_isNum1)
             {
-                _isNum1 = false;
-            }
+                if (_operator != null)
+                {
+                    Clear();
+                }
 
-            if (Display == "0")
-            {
-                Display = input;
-            }
-            else if (Display == "-0")
-            {
-                Display = "-" + input;
+                _number1 = UpdateNumber(_number1, input);
             }
             else
             {
-                Display = Display + input;
+                _number2 = UpdateNumber(_number2, input);
+            }
+
+            UpdateDisplay();
+        }
+
+        private string UpdateNumber(string number, string input)
+        {
+            if (number == "0")
+            {
+                return input;
+            }
+            else if (number == "-0")
+            {
+                return "-" + input;
+            }
+            else
+            {
+                return number + input;
             }
         }
 
         public void InputDecimal()
         {
-            if (Operator != null)
+            if (_isNum1)
             {
-                _isNum1 = false;
-                _number2 = "0";
+                if (_operator != null)
+                {
+                    Clear();
+                }
+
+                _number1 = InputDecimal(_number1);
             }
-            if (!Display.Contains("."))
+            else
             {
-                Display = Display + ".";
+                _number2 = InputDecimal(_number2);
             }
+
+            UpdateDisplay();
+        }
+
+        private string InputDecimal(string number)
+        {
+            if (!number.Contains("."))
+            {
+                number = number + ".";
+            }
+
+            return number;
         }
 
         public void Invert()
         {
-            if (Operator != null)
+            if (_isNum1)
             {
-                _isNum1 = false;
-            }
-            if (Display.StartsWith("-"))
-            {
-                Display = Display.Substring(1);
+                _number1 = Invert(_number1);
             }
             else
             {
-                Display = "-" + Display;
+                _number2 = Invert(_number2);
+            }
+
+            UpdateDisplay();
+        }
+
+        private string Invert(string number)
+        {
+            if (number.StartsWith("-"))
+            {
+                return number.Substring(1);
+            }
+            else
+            {
+                return "-" + number;
             }
         }
 
@@ -137,11 +152,10 @@ namespace Calculator.ViewModel
             {
                 Calculate();
             }
+            _isNum1 = false;
             _number2 = "0";
             _operator = op;
-            RaisePropertyChanged(() => Operator);
-            RaisePropertyChanged(() => Number2);
-            RaisePropertyChanged(() => Display);
+            Print();
         }
 
         public void Clear()
@@ -150,22 +164,19 @@ namespace Calculator.ViewModel
             _number1 = "0";
             _number2 = "0";
             _operator = null;
-            RaisePropertyChanged(() => Number1);
-            RaisePropertyChanged(() => Number2);
-            RaisePropertyChanged(() => Operator);
-            RaisePropertyChanged(() => Display);
+            UpdateDisplay();
         }
 
         public void Calculate()
         {
-            if (Operator != null)
+            if (_operator != null)
             {
                 string result = string.Empty;
                 try
                 {
                     var n1 = double.Parse(_number1);
                     var n2 = double.Parse(_number2);
-                    switch (Operator)
+                    switch (_operator)
                     {
                         case Operators.Add:
                             result = (n1 + n2).ToString();
@@ -192,9 +203,21 @@ namespace Calculator.ViewModel
                 finally
                 {
                     _isNum1 = true;
-                    Display = result;
+                    _number1 = result;
+                    UpdateDisplay();
                 }
             }
+        }
+
+        private void UpdateDisplay()
+        {
+            Display = _isNum1 ? _number1 : _number2;
+            Print();
+        }
+
+        private void Print()
+        {
+            Debug.Print($"{_number1} {_operator} {_number2} {_isNum1}");
         }
 
     }
