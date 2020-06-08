@@ -1,4 +1,4 @@
-﻿namespace Calculator.ViewModel
+﻿namespace Calculator.Models
 {
     public enum Operators
     {

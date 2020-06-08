@@ -71,8 +71,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Calculator.cs" />
+    <Compile Include="Models\CalculatorHelper.cs" />
     <Compile Include="ViewModel\CalculatorViewModel.cs" />
-    <Compile Include="ViewModel\Operators.cs" />
+    <Compile Include="Models\Operators.cs" />
     <Compile Include="ViewModel\ViewModelLocator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
