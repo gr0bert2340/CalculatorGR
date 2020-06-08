@@ -6,7 +6,7 @@ namespace Calculator.ViewModel
 {
     public class CalculatorViewModel : ViewModelBase
     {
-        private readonly Models.Calculator _calculator;
+        private readonly Models.CalculatorModel _calculator;
 
         public string Display
         {
@@ -62,7 +62,7 @@ namespace Calculator.ViewModel
 
         public CalculatorViewModel()
         {
-            _calculator = new Models.Calculator();
+            _calculator = new Models.CalculatorModel();
         }
 
         public void InputNumber(string input)

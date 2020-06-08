@@ -1,0 +1,268 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Calculator.Controls"
+    xmlns:models="clr-namespace:Calculator.Models">
+
+    <SolidColorBrush x:Key="CalculatorBackground">#2E2E2E</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorButtonBackground">#090909</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorOperatorBackground">#1C1C1C</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorFunctionBackground">#2c3e50</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorEqualsBackground">#096AB9</SolidColorBrush>
+
+    <Thickness x:Key="CalculatorItemMargin">2</Thickness>
+
+    <Style x:Key="CalculatorButtonFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border>
+                        <Rectangle Margin="2"
+                                       StrokeThickness="1"
+                                       Stroke="#60000000"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CalculatorTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="VerticalAlignment" Value="Bottom" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="TextAlignment" Value="Right" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontSize" Value="28" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <ScrollViewer x:Name="PART_ContentHost"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CalculatorButtonStyle" TargetType="{x:Type ButtonBase}" >
+        <Setter Property="SnapsToDevicePixels" Value="true" />
+        <Setter Property="OverridesDefaultStyle" Value="true" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource CalculatorButtonFocusVisual}" />
+        <Setter Property="FontSize" Value="18" />
+        <Setter Property="Background" Value="{StaticResource CalculatorButtonBackground}" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Grid>
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CommonStates">
+                                <VisualState x:Name="Normal" />
+                                <VisualState x:Name="MouseOver">
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Opacity" To="0.1" />
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Pressed">
+                                    <Storyboard>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="PressedBorder" Storyboard.TargetProperty="Visibility" Duration="0">
+                                            <DiscreteObjectKeyFrame Value="{x:Static Visibility.Visible}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <Border Background="{TemplateBinding Background}" />
+                        <Border x:Name="MouseOverBorder" Background="#FFFFFFFF" Opacity="0" />
+                        <Border x:Name="PressedBorder" Background="#FFFFFFFF" Opacity="0.1" Visibility="Collapsed" />
+
+                        <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              RecognizesAccessKey="True" />
+
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.5" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="OperatorButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource CalculatorOperatorBackground}" />
+    </Style>
+
+    <Style x:Key="FunctionButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource CalculatorFunctionBackground}" />
+    </Style>
+
+    <Style x:Key="CalculateButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
+        <Setter Property="Background" Value="{StaticResource CalculatorEqualsBackground}" />
+    </Style>
+
+    <Style TargetType="{x:Type controls:CalculatorControl}">
+        <Setter Property="Background" Value="{StaticResource CalculatorBackground}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:CalculatorControl}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+
+                        <Grid Margin="{StaticResource CalculatorItemMargin}">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.ColumnSpan="5" Margin="{StaticResource CalculatorItemMargin}">
+                                <StackPanel VerticalAlignment="Bottom" Margin="24">
+                                    <TextBox Text="{Binding CalculationDisplay, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource CalculatorTextBoxStyle}" IsReadOnly="True" FontSize="12" Opacity="0.6"/>
+                                    <TextBox Text="{Binding Display, Mode=OneWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource CalculatorTextBoxStyle}" IsReadOnly="True" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="7" Content="_7" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="0" Grid.Row="1" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="8" Content="_8" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="1" Grid.Row="1" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="9" Content="_9" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="2" Grid.Row="1" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="4" Content="_4" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="0" Grid.Row="2" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="5" Content="_5" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="1" Grid.Row="2" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="6" Content="_6" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="2" Grid.Row="2" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="1" Content="_1" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="0" Grid.Row="3" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="2" Content="_2" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="1" Grid.Row="3" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="3" Content="_3" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="2" Grid.Row="3" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InvertCommand}"
+                                    Content="-/+" 
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="0" Grid.Row="4" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputNumberCommand}"
+                                    CommandParameter="0" Content="_0"  
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculatorButtonStyle}"
+                                    Grid.Column="1" Grid.Row="4" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputDecimalCommand}"
+                                    Content="_."  
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="2" Grid.Row="4" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
+                                    Content="/"  CommandParameter="{x:Static models:Operators.Divide}"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="3" Grid.Row="1" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
+                                    Content="_x"  CommandParameter="{x:Static models:Operators.Multiply}"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="3" Grid.Row="2" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
+                                    Content="_-"  CommandParameter="{x:Static models:Operators.Subtract}"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="3" Grid.Row="3" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
+                                    Content="_+"  CommandParameter="{x:Static models:Operators.Add}"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="3" Grid.Row="4" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
+                                    Content="_pow"  CommandParameter="{x:Static models:Operators.Power}"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource OperatorButton}"
+                                    Grid.Column="4" Grid.Row="1" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.BackspaceCommand}"
+                                    Content="_Del"  
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource FunctionButton}"
+                                    Grid.Column="4" Grid.Row="2" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.ClearCommand}"
+                                    Content="_C"  IsCancel="True"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource FunctionButton}"
+                                    Grid.Column="4" Grid.Row="3" />
+
+                            <Button Command="{x:Static controls:CalculatorControl.CalculateCommand}"
+                                    Content="_=" IsDefault="True"
+                                    Margin="{StaticResource CalculatorItemMargin}"
+                                    Style="{StaticResource CalculateButton}"
+                                    Grid.Column="4" Grid.Row="4" />
+
+                        </Grid>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

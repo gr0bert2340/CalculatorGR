@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace Calculator.Models
 {
-    public class Calculator
+    public class CalculatorModel
     {
         private const string Zero = "0";
         private bool _isNum1 = true;
@@ -24,7 +24,7 @@ namespace Calculator.Models
             get { return _calculation; }
         }
 
-        public Calculator()
+        public CalculatorModel()
         {
             _number1 = Zero;
             _number2 = string.Empty;
