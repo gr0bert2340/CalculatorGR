@@ -184,7 +184,14 @@ namespace Calculator.Models
         {
             if (_isNum1)
             {
-                _number1 = UpdateNumberBackspace(_number1, Zero);
+                if (_operator != null)
+                {
+                    Clear();
+                }
+                else
+                {
+                    _number1 = UpdateNumberBackspace(_number1);
+                }
             }
             else
             {
@@ -196,20 +203,20 @@ namespace Calculator.Models
                 }
                 else
                 {
-                    _number2 = UpdateNumberBackspace(_number2, string.Empty);
+                    _number2 = UpdateNumberBackspace(_number2);
                 }
             }
 
             UpdateDisplay();
         }
 
-        private string UpdateNumberBackspace(string number, string defaultNumber)
+        private string UpdateNumberBackspace(string number)
         {
             if (!string.IsNullOrWhiteSpace(number) && number != Zero)
             {
                 return number.Length > 1 ? 
                     number.Substring(0, number.Length - 1) : 
-                    defaultNumber;
+                    Zero;
             }
 
             return number;
