@@ -4,33 +4,20 @@
     xmlns:controls="clr-namespace:Calculator.Controls"
     xmlns:models="clr-namespace:Calculator.Models">
 
+    <SolidColorBrush x:Key="CalculatorForeground">#EEFFFFFF</SolidColorBrush>
     <SolidColorBrush x:Key="CalculatorBackground">#2E2E2E</SolidColorBrush>
     <SolidColorBrush x:Key="CalculatorButtonBackground">#090909</SolidColorBrush>
     <SolidColorBrush x:Key="CalculatorOperatorBackground">#1C1C1C</SolidColorBrush>
-    <SolidColorBrush x:Key="CalculatorFunctionBackground">#2c3e50</SolidColorBrush>
-    <SolidColorBrush x:Key="CalculatorEqualsBackground">#096AB9</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorFunctionBackground">#1A2228</SolidColorBrush>
+    <SolidColorBrush x:Key="CalculatorHighlight">#096AB9</SolidColorBrush>
 
-    <Thickness x:Key="CalculatorItemMargin">2</Thickness>
-
-    <Style x:Key="CalculatorButtonFocusVisual">
-        <Setter Property="Control.Template">
-            <Setter.Value>
-                <ControlTemplate>
-                    <Border>
-                        <Rectangle Margin="2"
-                                       StrokeThickness="1"
-                                       Stroke="#60000000"/>
-                    </Border>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
+    <Thickness x:Key="CalculatorItemMargin">2</Thickness> 
 
     <Style x:Key="CalculatorTextBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="VerticalAlignment" Value="Bottom" />
         <Setter Property="HorizontalAlignment" Value="Right" />
         <Setter Property="TextAlignment" Value="Right" />
-        <Setter Property="Foreground" Value="White" />
+        <Setter Property="Foreground" Value="{StaticResource CalculatorForeground}" />
         <Setter Property="FontSize" Value="28" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="IsTabStop" Value="False" />
@@ -46,9 +33,9 @@
     <Style x:Key="CalculatorButtonStyle" TargetType="{x:Type ButtonBase}" >
         <Setter Property="SnapsToDevicePixels" Value="true" />
         <Setter Property="OverridesDefaultStyle" Value="true" />
-        <Setter Property="FocusVisualStyle" Value="{StaticResource CalculatorButtonFocusVisual}" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="Background" Value="{StaticResource CalculatorButtonBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource CalculatorForeground}" />
         <Setter Property="Focusable" Value="False" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
@@ -60,7 +47,7 @@
                                 <VisualState x:Name="Normal" />
                                 <VisualState x:Name="MouseOver">
                                     <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Opacity" To="0.1" />
+                                        <DoubleAnimation Storyboard.TargetName="MouseOverBorder" Storyboard.TargetProperty="Opacity" To="0.1" Duration="0:0:0.2"/>
                                     </Storyboard>
                                 </VisualState>
                                 <VisualState x:Name="Pressed">
@@ -74,7 +61,7 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Border Background="{TemplateBinding Background}" />
-                        <Border x:Name="MouseOverBorder" Background="#FFFFFFFF" Opacity="0" />
+                        <Border x:Name="MouseOverBorder" Background="#99FFFFFF" Opacity="0" />
                         <Border x:Name="PressedBorder" Background="#FFFFFFFF" Opacity="0.1" Visibility="Collapsed" />
 
                         <ContentPresenter HorizontalAlignment="Center"
@@ -96,6 +83,7 @@
 
     <Style x:Key="OperatorButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
         <Setter Property="Background" Value="{StaticResource CalculatorOperatorBackground}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style x:Key="FunctionButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
@@ -103,11 +91,13 @@
     </Style>
 
     <Style x:Key="CalculateButton" TargetType="{x:Type Button}" BasedOn="{StaticResource CalculatorButtonStyle}">
-        <Setter Property="Background" Value="{StaticResource CalculatorEqualsBackground}" />
+        <Setter Property="Background" Value="{StaticResource CalculatorHighlight}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
     </Style>
 
     <Style TargetType="{x:Type controls:CalculatorControl}">
         <Setter Property="Background" Value="{StaticResource CalculatorBackground}" />
+        <Setter Property="Foreground" Value="{StaticResource CalculatorForeground}" />
         <Setter Property="Focusable" Value="True" />
         <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Template">

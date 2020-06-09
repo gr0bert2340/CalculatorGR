@@ -6,6 +6,7 @@ namespace Calculator.Models
     public class CalculatorModel
     {
         private const string Zero = "0";
+        private const string Error = "Err";
         private bool _isNum1 = true;
 
         private string _number1;
@@ -24,6 +25,11 @@ namespace Calculator.Models
             get { return _calculation; }
         }
 
+        public bool IsInError
+        {
+            get { return _number1 == Error; }
+        }
+
         public CalculatorModel()
         {
             _number1 = Zero;
@@ -35,6 +41,11 @@ namespace Calculator.Models
 
         public void InputNumber(int number)
         {
+            if (IsInError)
+            {
+                Clear();
+            }
+
             if (_isNum1)
             {
                 if (_operator != null)
@@ -70,21 +81,24 @@ namespace Calculator.Models
 
         public void InputDecimal()
         {
-            if (_isNum1)
+            if (!IsInError)
             {
-                if (_operator != null)
+                if (_isNum1)
                 {
-                    Clear();
+                    if (_operator != null)
+                    {
+                        Clear();
+                    }
+
+                    _number1 = UpdateNumberDecimal(_number1);
+                }
+                else
+                {
+                    _number2 = UpdateNumberDecimal(_number2);
                 }
 
-                _number1 = UpdateNumberDecimal(_number1);
+                UpdateDisplay();
             }
-            else
-            {
-                _number2 = UpdateNumberDecimal(_number2);
-            }
-
-            UpdateDisplay();
         }
 
         private string UpdateNumberDecimal(string number)
@@ -101,16 +115,19 @@ namespace Calculator.Models
 
         public void Invert()
         {
-            if (_isNum1)
+            if (!IsInError)
             {
-                _number1 = InvertNumber(_number1);
-            }
-            else
-            {
-                _number2 = InvertNumber(_number2);
-            }
+                if (_isNum1)
+                {
+                    _number1 = InvertNumber(_number1);
+                }
+                else
+                {
+                    _number2 = InvertNumber(_number2);
+                }
 
-            UpdateDisplay();
+                UpdateDisplay();
+            }
         }
 
         private string InvertNumber(string number)
@@ -127,26 +144,30 @@ namespace Calculator.Models
 
         public void InputOperator(Operators op)
         {
-            if (!_isNum1 && !string.IsNullOrWhiteSpace(_number2))
+            if (!IsInError)
             {
-                Calculate();
+                if (!_isNum1 && !string.IsNullOrWhiteSpace(_number2))
+                {
+                    Calculate();
+                }
+                _isNum1 = false;
+                _number2 = string.Empty;
+                _operator = op;
+                UpdateCalculationPartial();
             }
-            _isNum1 = false;
-            _number2 = string.Empty;
-            _operator = op;
-            UpdateCalculationPartial();
         }
 
         public void Calculate()
         {
-            if (_operator != null)
+            if (_operator != null && !IsInError)
             {
+                if (string.IsNullOrWhiteSpace(_number2))  {  _number2 = Zero; }
                 UpdateCalculationFull();
                 string result = string.Empty;
                 try
                 {
                     var n1 = double.Parse(_number1);
-                    var n2 = !string.IsNullOrWhiteSpace(_number2) ? double.Parse(_number2) : 0;
+                    var n2 =  double.Parse(_number2);
                     switch (_operator)
                     {
                         case Operators.Add:
@@ -168,7 +189,8 @@ namespace Calculator.Models
                 }
                 catch (Exception e)
                 {
-                    result = "Err";
+                    Clear();
+                    result = Error;
                     Console.WriteLine(e);
                 }
                 finally
@@ -182,32 +204,38 @@ namespace Calculator.Models
 
         public void BackSpace()
         {
-            if (_isNum1)
+            if (!IsInError)
             {
-                if (_operator != null)
+                if (_isNum1)
                 {
-                    Clear();
+                    if (_operator != null)
+                    {
+                        Clear();
+                    }
+                    else
+                    {
+                        _number1 = UpdateNumberBackspace(_number1);
+                    }
                 }
                 else
                 {
-                    _number1 = UpdateNumberBackspace(_number1);
+                    if (_number2.Length <= 1)
+                    {
+                        _operator = null;
+                        _isNum1 = true;
+                        _calculation = string.Empty;
+                    }
+                    else
+                    {
+                        _number2 = UpdateNumberBackspace(_number2);
+                    }
                 }
+                UpdateDisplay();
             }
             else
             {
-                if (_number2.Length <= 1)
-                {
-                    _operator = null;
-                    _isNum1 = true;
-                    _calculation = string.Empty;
-                }
-                else
-                {
-                    _number2 = UpdateNumberBackspace(_number2);
-                }
+                Clear();
             }
-
-            UpdateDisplay();
         }
 
         private string UpdateNumberBackspace(string number)
