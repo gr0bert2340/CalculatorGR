@@ -56,6 +56,15 @@ namespace Calculator.Controls
             var backspaceBinding = new CommandBinding(BackspaceCommand, OnBackspace, CanBackspace);
             var clearBinding = new CommandBinding(ClearCommand, OnClear, CanClear);
             var calculateBinding = new CommandBinding(CalculateCommand, OnCalculate, CanCalculate);
+            var delBinding = new InputBinding(BackspaceCommand, new KeyGesture(Key.Delete));
+            var backBinding = new InputBinding(BackspaceCommand, new KeyGesture(Key.Back));
+            var multiplyBinding = new KeyBinding
+            {
+                Command = InputOperatorCommand,
+                Key = Key.D8,
+                Modifiers = ModifierKeys.Shift,
+                CommandParameter = Operators.Multiply
+            };
 
             CommandBindings.Add(inputNumberBinding);
             CommandBindings.Add(inputOperatorBinding);
@@ -64,13 +73,33 @@ namespace Calculator.Controls
             CommandBindings.Add(backspaceBinding);
             CommandBindings.Add(clearBinding);
             CommandBindings.Add(calculateBinding);
+            InputBindings.Add(delBinding);
+            InputBindings.Add(backBinding);
+            InputBindings.Add(multiplyBinding);
         }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
 
+            Loaded += (sender, args) => FocusCalculate();
+
             UpdateDisplay();
+            FocusCalculate();
+        }
+
+        private void FocusCalculate()
+        {
+            Focus();
+        }
+
+        protected override void OnPreviewTextInput(TextCompositionEventArgs e)
+        {
+            base.OnPreviewTextInput(e);
+            if (e.Text == "/" && InputOperatorCommand.CanExecute(Operators.Divide, this))
+            {
+                InputOperatorCommand.Execute(Operators.Divide, this);
+            }
         }
 
         private void CanInputNumber(object sender, CanExecuteRoutedEventArgs e)

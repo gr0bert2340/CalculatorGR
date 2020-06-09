@@ -32,6 +32,8 @@
         <Setter Property="TextAlignment" Value="Right" />
         <Setter Property="Foreground" Value="White" />
         <Setter Property="FontSize" Value="28" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -47,6 +49,8 @@
         <Setter Property="FocusVisualStyle" Value="{StaticResource CalculatorButtonFocusVisual}" />
         <Setter Property="FontSize" Value="18" />
         <Setter Property="Background" Value="{StaticResource CalculatorButtonBackground}" />
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="IsTabStop" Value="False" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ButtonBase}">
@@ -104,8 +108,8 @@
 
     <Style TargetType="{x:Type controls:CalculatorControl}">
         <Setter Property="Background" Value="{StaticResource CalculatorBackground}" />
-        <Setter Property="Focusable" Value="False" />
-        <Setter Property="IsTabStop" Value="False" />
+        <Setter Property="Focusable" Value="True" />
+        <Setter Property="IsTabStop" Value="True" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:CalculatorControl}">
@@ -211,7 +215,7 @@
                                     Grid.Column="2" Grid.Row="4" />
 
                             <Button Command="{x:Static controls:CalculatorControl.InputOperatorCommand}"
-                                    Content="/"  CommandParameter="{x:Static models:Operators.Divide}"
+                                    Content="÷" CommandParameter="{x:Static models:Operators.Divide}"
                                     Margin="{StaticResource CalculatorItemMargin}"
                                     Style="{StaticResource OperatorButton}"
                                     Grid.Column="3" Grid.Row="1" />
@@ -241,7 +245,7 @@
                                     Grid.Column="4" Grid.Row="1" />
 
                             <Button Command="{x:Static controls:CalculatorControl.BackspaceCommand}"
-                                    Content="_Del"  
+                                    Content="Del"  
                                     Margin="{StaticResource CalculatorItemMargin}"
                                     Style="{StaticResource FunctionButton}"
                                     Grid.Column="4" Grid.Row="2" />
@@ -252,7 +256,8 @@
                                     Style="{StaticResource FunctionButton}"
                                     Grid.Column="4" Grid.Row="3" />
 
-                            <Button Command="{x:Static controls:CalculatorControl.CalculateCommand}"
+                            <Button x:Name="CalculateButton" 
+                                    Command="{x:Static controls:CalculatorControl.CalculateCommand}"
                                     Content="_=" IsDefault="True"
                                     Margin="{StaticResource CalculatorItemMargin}"
                                     Style="{StaticResource CalculateButton}"
